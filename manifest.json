@@ -1,0 +1,16 @@
+{
+  "name": "NASA Software Catalog 2025-2026",
+  "short_name": "NASA Catalog",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a192f",
+  "theme_color": "#0a192f",
+  "description": "An interactive browser for the NASA Software Catalog 2025-2026.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
