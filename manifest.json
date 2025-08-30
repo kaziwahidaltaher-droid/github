@@ -1,11 +1,11 @@
 {
-  "name": "NASA Software Catalog 2025-2026",
-  "short_name": "NASA Catalog",
+  "name": "AURELION AI // NASA Software Database",
+  "short_name": "AURELION",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a192f",
-  "theme_color": "#0a192f",
-  "description": "An interactive browser for the NASA Software Catalog 2025-2026.",
+  "background_color": "#020a17",
+  "theme_color": "#020a17",
+  "description": "An interactive interface for the NASA Software Database, powered by the AURELION AI.",
   "icons": [
     {
       "src": "icon.svg",
