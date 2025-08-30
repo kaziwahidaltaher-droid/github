@@ -4,6 +4,11 @@
  */
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
+import { AiConfigPanel, AiConfig, EmotionalModule } from './AiConfigPanel';
+import { ArtisticLensPanel, LensConfig } from './ArtisticLensPanel';
+import { AurelionApp } from './AurelionApp';
+import { AudioStreamer } from './audio-streamer';
+import { GenaiLiveClient } from './genai-live-client';
 
 // Make sure hljs is declared if it's coming from a script tag
 declare const hljs: any;
@@ -96,6 +101,27 @@ const catalogData = {
      { id: 'system_testing', name: 'System Testing', icon: 'gauge', description: 'Acoustics, Shock, Vibration, Thermal Vacuum, Leak and Pressure Testing', software: [] },
      { id: 'vehicle_management', name: 'Vehicle Management', icon: 'capsule', description: 'Flight Software, Spacecraft Processes, Command and Data Handling', software: [] },
      {
+      id: "aurelion_visualizer",
+      name: "Aurelion Visualizer",
+      icon: "waveform",
+      description: "An audio-reactive visual experience powered by the AURELION engine.",
+      component: 'AurelionApp',
+    },
+     {
+      id: "artistic_lens",
+      name: "Artistic Lens",
+      icon: "filter",
+      description: "Configure the visual post-processing effects of the AURELION interface.",
+      component: 'ArtisticLensPanel',
+    },
+     {
+      id: "ai_config",
+      name: "AI Configuration",
+      icon: "settings",
+      description: "Configure the parameters for the AURELION AI Probe.",
+      component: 'AiConfigPanel',
+    },
+     {
         id: "gemini_api_examples",
         name: "Gemini API Examples",
         icon: "code",
@@ -112,7 +138,7 @@ const notebookData = [
         content: [
             { type: 'p', text: "The new Google Gen AI SDK provides programmatic access to Gemini models using both the Google AI for Developers and Vertex AI APIs. With a few exceptions, code that runs on one platform will run on both. This means that you can prototype an application using the Developer API and then migrate the application to Vertex AI without rewriting your code." },
             { type: 'h4', text: 'Install SDK' },
-            { type: 'code', lang: 'bash', code: "%pip install -U -q \"google-genai>=1.16.0\"" },
+            { type: 'code', lang: 'bash', code: '%pip install -U -q "google-genai>=1.16.0"' },
             { type: 'h4', text: 'Setup your API key' },
             { type: 'p', text: "To run the following cell, your API key must be stored it in a Colab Secret named GOOGLE_API_KEY. If you don't already have an API key, or you're not sure how to create a Colab Secret, see Authentication for an example." },
             { type: 'code', lang: 'python', code: "from google.colab import userdata\n\nGOOGLE_API_KEY=userdata.get('GOOGLE_API_KEY')" },
@@ -123,7 +149,7 @@ from google.genai import types
 
 client = genai.Client(api_key=GOOGLE_API_KEY)
 
-MODEL_ID="gemini-2.5-flash-preview-05-20"`},
+MODEL_ID='gemini-2.5-flash-preview-05-20'`},
             { type: 'h4', text: 'Imports' },
             { type: 'code', lang: 'python', code: `import json
 from PIL import Image
@@ -356,6 +382,11 @@ const ICONS = {
   chevron_down: <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>,
   copy: <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-5zm0 16H8V7h11v14z"/></svg>,
   check: <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>,
+  close: <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>,
+  send: <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>,
+  settings: <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12-.64l2 3.46c.12.22.39.3.61.22l2.49 1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59-1.69.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" fill="currentColor"/></svg>,
+  filter: <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" fill="currentColor"/></svg>,
+  waveform: <svg viewBox="0 0 24 24"><path d="M3 15h2v-6H3v6zm4 2h2V7H7v10zm4-4h2v-2h-2v2zm4 4h2V3h-2v18zm4-6h2v-4h-2v4z" fill="currentColor"/></svg>,
 };
 
 // --- Components ---
@@ -533,10 +564,45 @@ const SoftwareCard = ({ item, isHighlighted }) => {
   );
 };
 
-
-const ContentArea = ({ category }) => {
+const ContentArea = ({ category, aiConfig, onAiConfigChange, emotionalModules, lensConfig, onLensConfigChange, audioStreamer }) => {
   if (!category) {
     return <div className="content-area">Select a category to begin.</div>;
+  }
+  
+  if (category.component === 'AurelionApp') {
+    return (
+      <main className="content-area full-bleed">
+        <AurelionApp audioStreamer={audioStreamer} lensConfig={lensConfig} />
+      </main>
+    );
+  }
+
+  if (category.component === 'ArtisticLensPanel') {
+      return (
+          <main className="content-area">
+              <div className="category-header">
+                  <h1 className="category-title">{category.name}</h1>
+                  <p className="category-description">{category.description}</p>
+              </div>
+              <ArtisticLensPanel config={lensConfig} onConfigChange={onLensConfigChange} />
+          </main>
+      );
+  }
+
+  if (category.component === 'AiConfigPanel') {
+      return (
+          <main className="content-area">
+              <div className="category-header">
+                  <h1 className="category-title">{category.name}</h1>
+                  <p className="category-description">{category.description}</p>
+              </div>
+              <AiConfigPanel
+                config={aiConfig}
+                onConfigChange={onAiConfigChange}
+                emotionalModules={emotionalModules}
+              />
+          </main>
+      );
   }
 
   if (category.component === 'GeminiApiExamples') {
@@ -570,10 +636,184 @@ const ContentArea = ({ category }) => {
   );
 };
 
+interface ChatMessage {
+    role: 'user' | 'model';
+    text: string;
+}
+
+const AurelionProbe = ({ onDismiss, config }) => {
+    const [messages, setMessages] = useState<ChatMessage[]>([{ role: 'model', text: 'AURELION Probe activated. How may I assist you?' }]);
+    const [currentInput, setCurrentInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const clientRef = useRef<GenaiLiveClient | null>(null);
+    const chatHistoryRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const client = new GenaiLiveClient(process.env.API_KEY);
+        clientRef.current = client;
+
+        const handleStatus = (status, details) => {
+            setIsLoading(status === 'initializing' || status === 'streaming');
+            if (status === 'error') {
+                setMessages(prev => [...prev, { role: 'model', text: `Error: ${details}` }]);
+            }
+        };
+
+        const handleChunk = (chunkText) => {
+            setMessages(prev => {
+                const lastMessage = prev[prev.length - 1];
+                if (lastMessage?.role === 'model') {
+                    const updatedMessages = [...prev];
+                    updatedMessages[updatedMessages.length - 1].text += chunkText;
+                    return updatedMessages;
+                }
+                return prev;
+            });
+        };
+        
+        client.on('status', handleStatus);
+        client.on('chunk', handleChunk);
+        
+        client.connect(config);
+
+        return () => {
+            client.off('status', handleStatus);
+            client.off('chunk', handleChunk);
+            client.disconnect();
+        };
+    }, []); // Run only once
+
+    useEffect(() => {
+        clientRef.current?.updateConfig(config);
+    }, [config]);
+
+    useEffect(() => {
+        if (chatHistoryRef.current) {
+            chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    const handleSendMessage = async () => {
+        if (!currentInput.trim() || isLoading || !clientRef.current) return;
+
+        const userMessage = currentInput.trim();
+        setMessages(prev => [...prev, { role: 'user', text: userMessage }, {role: 'model', text: ''}]);
+        setCurrentInput('');
+        
+        clientRef.current.sendMessage(userMessage);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleSendMessage();
+    };
+
+
+    return (
+        <div className="probe-overlay" onClick={onDismiss}>
+            <div className="probe-container" onClick={(e) => e.stopPropagation()}>
+                <button className="probe-dismiss-button" onClick={onDismiss} aria-label="Dismiss Probe">
+                    {ICONS['close']}
+                </button>
+                <div className="probe-header">
+                    <div className="probe-visual">
+                        <div className="probe-core"></div>
+                        <div className="probe-ring ring-1"></div>
+                        <div className="probe-ring ring-2"></div>
+                        <div className="probe-ring ring-3"></div>
+                    </div>
+                    <h2 className="probe-title">AURELION PROBE</h2>
+                </div>
+                <div className="probe-chat-history" ref={chatHistoryRef}>
+                    {messages.map((msg, index) => (
+                        <div key={index} className={`chat-message role-${msg.role}`}>
+                           <p>{msg.text}</p>
+                        </div>
+                    ))}
+                    {isLoading && <div className="chat-message role-model"><span className="typing-indicator"></span></div>}
+                </div>
+                <form className="probe-input-form" onSubmit={handleSubmit}>
+                    <textarea
+                        value={currentInput}
+                        onChange={(e) => setCurrentInput(e.target.value)}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                handleSendMessage();
+                            }
+                        }}
+                        placeholder="Transmit query to probe..."
+                        rows={1}
+                        disabled={isLoading}
+                    />
+                    <button type="submit" disabled={isLoading || !currentInput.trim()} aria-label="Send message">
+                        {ICONS['send']}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
 const App = () => {
   const [activeCategoryId, setActiveCategoryId] = useState(catalogData.categories[0].id);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isProbeActive, setProbeActive] = useState(false);
+  const [emotionalModules, setEmotionalModules] = useState<EmotionalModule[]>([]);
+  
+  const audioStreamerRef = useRef<AudioStreamer | null>(null);
+
+  const [aiConfig, setAiConfig] = useState<AiConfig>({
+      model: 'gemini-2.5-flash',
+      temperature: 0.7,
+      topK: 50,
+      topP: 0.95,
+      systemInstruction: "You are the AURELION Probe, a sophisticated AI assistant integrated into the AURELION OS. You are designed to assist users browsing the NASA Software Catalog. Your responses should be concise, helpful, and maintain a slightly formal, high-tech tone. You can answer questions about NASA, software, technology, or any other general knowledge queries. Do not mention that you are a language model.",
+  });
+  const [lensConfig, setLensConfig] = useState<LensConfig>({
+      bloom: 0.5,
+      chromaticAberration: 0.2,
+      scanLines: true,
+      colorGrading: 'Cyberpunk',
+  });
+
+  useEffect(() => {
+    // Fetch emotional modules on initial load
+    fetch('./emotional-modules.json')
+        .then(response => response.json())
+        .then(data => setEmotionalModules(data))
+        .catch(error => console.error("Failed to load emotional modules:", error));
+  }, []);
+
+  useEffect(() => {
+    // Initialize audio streamer ref
+    if (!audioStreamerRef.current) {
+        audioStreamerRef.current = new AudioStreamer();
+    }
+    const audioStreamer = audioStreamerRef.current;
+    
+    // Manage audio stream based on active category
+    if (activeCategoryId === 'aurelion_visualizer') {
+      if (!audioStreamer.isRecordingActive()) {
+        audioStreamer.start().catch(err => {
+          console.error("Could not start microphone:", err);
+          // Optionally, navigate away or show an error message
+        });
+      }
+    } else {
+      if (audioStreamer.isRecordingActive()) {
+        audioStreamer.stop();
+      }
+    }
+    
+    // Cleanup on component unmount
+    return () => {
+      if (audioStreamer.isRecordingActive()) {
+        audioStreamer.stop();
+      }
+    };
+  }, [activeCategoryId]);
 
   const handleSelectCategory = (id) => {
     setActiveCategoryId(id);
@@ -586,6 +826,10 @@ const App = () => {
     setSidebarCollapsed(prev => !prev);
   }
 
+  const handleSummonProbe = () => {
+    setProbeActive(true);
+  };
+
   const activeCategory = catalogData.categories.find(c => c.id === activeCategoryId);
 
   return (
@@ -596,13 +840,22 @@ const App = () => {
           categories={catalogData.categories}
           activeCategoryId={activeCategoryId}
           onSelectCategory={handleSelectCategory}
-          onSummonProbe={() => alert("Summoning AURELION Probe...")}
+          onSummonProbe={handleSummonProbe}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={handleToggleSidebarCollapse}
           isSidebarOpen={isSidebarOpen}
         />
-        <ContentArea category={activeCategory} />
+        <ContentArea 
+            category={activeCategory} 
+            aiConfig={aiConfig} 
+            onAiConfigChange={setAiConfig}
+            emotionalModules={emotionalModules}
+            lensConfig={lensConfig}
+            onLensConfigChange={setLensConfig}
+            audioStreamer={audioStreamerRef.current}
+        />
       </div>
+      {isProbeActive && <AurelionProbe onDismiss={() => setProbeActive(false)} config={aiConfig} />}
     </div>
   );
 };

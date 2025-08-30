@@ -1,5 +1,7 @@
 {
   "name": "AURELION \"AI Galaxy Simulation\"",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "microphone"
+  ],
   "description": "An interactive web-based browser for the NASA Software Catalog, presented through the AURELION AI interface."
 }
